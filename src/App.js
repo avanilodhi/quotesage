@@ -1,58 +1,61 @@
 import React, { useState, useEffect } from 'react';
-import './App.css';
+import axios from 'axios';
 import QuoteCard from './components/QuoteCard';
 import QuoteButton from './components/QuoteButton';
 import ThemeToggle from './components/ThemeToggle';
-import axios from 'axios';
+import './App.css';
 
 function App() {
-  const [quoteData, setQuoteData] = useState({ q: '', a: '' });
+  const [quote, setQuote] = useState('');
+  const [author, setAuthor] = useState('');
+  const [fontSize, setFontSize] = useState(20);
+  const [theme, setTheme] = useState('light');
   const [isLiked, setIsLiked] = useState(false);
-  const [fontSize, setFontSize] = useState('18px');
-  const [isDarkTheme, setIsDarkTheme] = useState(false);
 
   const fetchQuote = async () => {
     try {
       const res = await axios.get('https://zenquotes.io/api/random');
-      console.log('API Response:', response.data);
-      const { q, a } = res.data[0];
-      setQuoteData({ q, a });
-      setIsLiked(false); // reset like state on new quote
-    } catch (err) {
-      console.error('Failed to fetch quote:', err);
+      const quoteData = res.data[0];
+      setQuote(quoteData.q);
+      setAuthor(quoteData.a);
+    } catch (error) {
+      console.error('Error fetching quote:', error);
+      setQuote("Believe in yourself. You're capable of more than you know.");
+      setAuthor("Unknown");
     }
   };
 
   useEffect(() => {
-    fetchQuote(); // fetch a quote on first render
+    fetchQuote();
   }, []);
 
-  const toggleTheme = () => {
-    setIsDarkTheme((prev) => !prev);
+  const toggleLike = () => {
+    setIsLiked(!isLiked);
   };
 
-  const changeFontSize = (e) => {
-    setFontSize(e.target.value);
+  const toggleTheme = () => {
+    setTheme(theme === 'light' ? 'dark' : 'light');
   };
+
+  const increaseFont = () => setFontSize(fontSize + 2);
+  const decreaseFont = () => setFontSize(Math.max(14, fontSize - 2));
 
   return (
-    <div className={`App ${isDarkTheme ? 'dark' : 'light'}`}>
-      <div className="container">
-        <ThemeToggle isDark={isDarkTheme} toggleTheme={toggleTheme} />
-        <select value={fontSize} onChange={changeFontSize}>
-          <option value="16px">Small</option>
-          <option value="18px">Medium</option>
-          <option value="22px">Large</option>
-        </select>
-        <QuoteCard
-          quote={quoteData.q}
-          author={quoteData.a}
-          fontSize={fontSize}
-          isLiked={isLiked}
-          onLike={() => setIsLiked(!isLiked)}
-          theme={isDarkTheme ? 'dark' : 'light'}
-        />
-        <QuoteButton text="New Quote" onClick={fetchQuote} />
+    <div className={`App ${theme}`}>
+      <h1>QuoteSage</h1>
+      <ThemeToggle toggleTheme={toggleTheme} theme={theme} />
+      <QuoteCard
+        quote={quote}
+        author={author}
+        fontSize={fontSize}
+        theme={theme}
+        isLiked={isLiked}
+        toggleLike={toggleLike}
+      />
+      <QuoteButton onClick={fetchQuote} label="New Quote" />
+      <div style={{ marginTop: '10px' }}>
+        <QuoteButton onClick={increaseFont} label="A+" />
+        <QuoteButton onClick={decreaseFont} label="A−" />
       </div>
     </div>
   );

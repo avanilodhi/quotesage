@@ -14,6 +14,7 @@ function App() {
   const fetchQuote = async () => {
     try {
       const res = await axios.get('https://zenquotes.io/api/random');
+      console.log('API Response:', response.data);
       const { q, a } = res.data[0];
       setQuoteData({ q, a });
       setIsLiked(false); // reset like state on new quote

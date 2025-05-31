@@ -1,0 +1,32 @@
+.quote-card {
+  background-color: #f0f0f0;
+  border-radius: 12px;
+  padding: 20px;
+  margin: 20px auto;
+  text-align: center;
+  max-width: 600px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    color: inherit;
+}
+
+.quote-card.dark {
+  background-color: #333;
+  color: #f9f9f9;
+}
+
+.quote-text {
+  margin-bottom: 10px;
+  line-height: 1.5;
+}
+
+.quote-author {
+  font-style: italic;
+  margin-bottom: 10px;
+}
+
+.like-btn {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
